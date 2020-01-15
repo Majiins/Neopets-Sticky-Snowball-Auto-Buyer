@@ -29,7 +29,6 @@ class client:
     def buyBall(self):
         while True:
             sleepDelay = random.uniform(1800, 2100)
-            print(round(sleepDelay))
             resp = self.neo.post('faerieland/springs.phtml', {'type': 'purchase'}, 'http://www.neopets.com/faerieland/springs.phtml')
             if resp.find('buy one item every 30 minutes') > 1:
                 self.neo.log('You have already brought a snowball, sleeping for {0} minutes..'.format(round(sleepDelay / 60)))
