@@ -13,6 +13,9 @@ class neo:
         self.getSettings()
         self.setHeaders()
 
+    def log(self, msg): 
+        print(time.strftime('%A') + ' ' + '%s%s'%(time.strftime('%H:%M:%S => '),msg.encode('utf-8').decode('utf-8')))
+
     def getSettings(self):
         with open('settings/settings.txt', 'r') as f:
             settings = f.read().rstrip()
