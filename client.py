@@ -20,7 +20,7 @@ class client:
             self.neo.proxy(proxy)
         resp = self.neo.post('login.phtml', {'destination': '', 'username': username, 'password': password}, 'http://www.neopets.com/login/')
         if resp.find('id=\'npanchor\'') > 1:
-            print('Logged in as %s' % username)
+            self.neo.log('Logged in as %s' % username)
             return True
         else:
             input('Unable to login as %s. Press enter to exit..' % username)
@@ -28,15 +28,17 @@ class client:
 
     def buyBall(self):
         while True:
+            sleepDelay = random.uniform(1800, 2100)
+            print(round(sleepDelay))
             resp = self.neo.post('faerieland/springs.phtml', {'type': 'purchase'}, 'http://www.neopets.com/faerieland/springs.phtml')
             if resp.find('buy one item every 30 minutes') > 1:
-                print('You have already brought a snowball, sleeping for 30 minutes..')
-                time.sleep(random.uniform(1800, 2100))
+                self.neo.log('You have already brought a snowball, sleeping for {0} minutes..'.format(round(sleepDelay / 60)))
+                time.sleep(sleepDelay)
             else:
                 resp = self.neo.get('faerieland/process_springs.phtml?obj_info_id=8429', 'http://www.neopets.com/faerieland/springs.phtml')
                 self.depositInventory()
-                print('Successfully purchased Sticky Snowball, sleeping for 30 minutes..')
-                time.sleep(random.uniform(1800, 2100))
+                self.neo.log('Successfully purchased Sticky Snowball, sleeping for {0} minutes..'.format(round(sleepDelay / 60)))
+                time.sleep(sleepDelay)
 
     def depositInventory(self):
         arr = 1
@@ -54,16 +56,15 @@ class client:
             data['checkall'] = 'on'
             self.neo.post('process_quickstock.phtml', data, 'http://www.neopets.com/quickstock.phtml')
         if results:
-            print('Deposited %s items to your SDB' % results)
+            self.neo.log('Deposited %s items to your SDB' % results)
         else:
-            print('You don\'t have any items to deposit')
+            self.neo.log('You don\'t have any items to deposit')
 
 
     def doBot(self):
         isLogged = self.doLogin()
         if isLogged:
             self.buyBall()
-
         if not isLogged:
             sys.exit()
 
