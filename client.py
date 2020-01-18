@@ -1,4 +1,5 @@
 from classes.neo import neo
+from classes.trudy import Trudy
 import sys
 import re
 import random
@@ -7,6 +8,8 @@ import time
 class client:
     def __init__(self):
         self.neo = neo()
+        self.trudy = Trudy(self.neo)
+        self.doTrudy = False
 
     def doLogin(self):
         with open('settings/settings.txt', 'r') as f:
@@ -28,6 +31,8 @@ class client:
 
     def buyBall(self):
         while True:
+            if self.doTrudy:
+                self.trudy.doTrudy()
             sleepDelay = random.uniform(1800, 2100)
             resp = self.neo.post('faerieland/springs.phtml', {'type': 'purchase'}, 'http://www.neopets.com/faerieland/springs.phtml')
             if resp.find('buy one item every 30 minutes') > 1:
